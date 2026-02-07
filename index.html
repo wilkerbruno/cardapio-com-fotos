@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante Sabor & Arte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .restaurant-name {
+            font-size: 3.5em;
+            font-weight: 300;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            color: #d44137;
+            text-transform: uppercase;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            color: #c0c0c0;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            position: sticky;
+            top: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #d44137;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            list-style: none;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 20px 25px;
+        }
+
+        .nav-link {
+            color: #c0c0c0;
+            text-decoration: none;
+            font-size: 1em;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .nav-link:hover {
+            color: #d44137;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #d44137;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Menu Hamburguer */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 20px;
+            gap: 6px;
+        }
+
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background: #d44137;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(9px, 9px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(9px, -9px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            width: 100%;
+            height: auto;
+            margin-top: -50px;
+        }
+
+        .menu-section {
+            margin-bottom: 60px;
+            scroll-margin-top: 80px;
+        }
+
+        .section-title {
+            font-size: 2.5em;
+            color: #d44137;
+            border-bottom: 3px solid #d44137;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .item-name {
+            font-size: 1.3em;
+            color: #f5f5f5;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .special-badge {
+            display: inline-block;
+            background: #d44137;
+            color: #1a1a1a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.65em;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 10px;
+        }
+
+        .item-description {
+            font-size: 0.9em;
+            color: #b0b0b0;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .item-price {
+            font-size: 1.5em;
+            color: #d44137;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            margin-top: 60px;
+        }
+
+        .footer-info {
+            color: #c0c0c0;
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        /* Botão Flutuante WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #d44137;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(202, 9, 9, 0.925);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(202, 9, 9, 0.925);
+            background-color: #e72b1d;
+        }
+
+        .whatsapp-float svg {
+            width: 35px;
+            height: 35px;
+            fill: #1a1a1a;
+        }
+
+        @media (max-width: 768px) {
+            .restaurant-name {
+                font-size: 2.2em;
+                letter-spacing: 4px;
+            }
+
+            /* Menu Hamburguer Mobile */
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-container {
+                padding: 0;
+            }
+
+            .nav-list {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: rgba(26, 26, 26, 0.98);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                gap: 0;
+                border-top: 1px solid rgba(212, 175, 55, 0.3);
+            }
+
+            .nav-list.active {
+                max-height: 400px;
+            }
+
+            .nav-item {
+                padding: 0;
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .nav-item:last-child {
+                border-bottom: none;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 20px;
+                font-size: 0.95em;
+                letter-spacing: 2px;
+            }
+
+            .nav-link::after {
+                display: none;
+            }
+
+            .menu-section {
+                scroll-margin-top: 70px;
+            }
+
+            .section-title {
+                font-size: 1.8em;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .whatsapp-float svg {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="img/logo_la_brasil_02.png" class="logo" alt="La Brasil - Espetinho e Hamburgueria">
+        </div>
+    </div>
+
+    <!-- Menu de Navegação -->
+    <nav class="nav-menu">
+        <div class="nav-container">
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-list" id="navList">
+                <li class="nav-item"><a href="#espetinhos" class="nav-link">Espetinhos</a></li>
+                <li class="nav-item"><a href="#hamburgueres" class="nav-link">Hambúrgueres</a></li>
+                <li class="nav-item"><a href="#jantinhas" class="nav-link">Jantinhas</a></li>
+                <li class="nav-item"><a href="#caldinhos" class="nav-link">Caldinhos</a></li>
+                <li class="nav-item"><a href="#cervejas" class="nav-link">Cervejas</a></li>
+                <li class="nav-item"><a href="#refrigerantes" class="nav-link">Refrigerantes e Água</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Entradas -->
+        <div class="menu-section" id="espetinhos">
+            <h2 class="section-title">Espetinhos</h2>
+            
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <img src="img/espetinhos/Alcatra.jpeg" alt="Carpaccio de Salmão" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">ALCATRA <span class="special-badge">Chef</span></div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 12,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/carne_bacon.jpeg" alt="Bruschetta Especial" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">CARNE COM BACON</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 13,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/carneSol_queijo.jpeg" alt="Camarões ao Alho" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">CARNE DE SOL COM QUEIJO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 13,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/kafita_queijo.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">KAFITA COM QUEIJO</div>
+                        </div>                        
+                        <div class="card-footer">
+                            <div class="item-price">R$ 10,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/charque.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">CHARQUE</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 14,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/carneiro.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">CARNEIRO COM OSSO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 14,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/alcatra_suina.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">ALCATRA SUÍNA</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 12,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/coracao.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">CORAÇÃO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 10,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/frango.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">FRANGO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 10,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/frango_bacon.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">FRANGO COM BACON</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 13,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/asinha.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">ASINHA DE FRANGO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 12,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/pao_alho.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">PÃO DE ALHO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 9,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/linguica_toscana.jpeg" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">LINGUIÇA TOSCANA</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 10,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=500&h=300&fit=crop" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">OVO COM BACON</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 10,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/queijo_coalho02.png" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">QUEIJO COALHO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 10,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/queijo_coalho_melaco.png" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">QUEIJO COM MELAÇO</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 10,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="img/espetinhos/romeu_julieta.png" alt="Tábua de Queijos e Frios" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">ROMEU E JULIETA COM BACON</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 11,00</div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Pratos Principais -->
+        <div class="menu-section" id="hamburgueres">
+            <h2 class="section-title">Hambúrgueres</h2>
+            
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <img src="img/hamburgueres/hamburguer_artesanal.png" alt="Filé Mignon ao Molho Madeira" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">HAMBÚRGUER ARTESANAL <span class="special-badge">Destaque</span></div>
+                        </div>
+                        <div class="item-description">CARNE ARTESANAL 150 GRAMAS, CEBOLA CARAMELIZADA, MAIONESE TEMPERADA, QUEIJO CHEDDAR, TOMATE, ALFACE.</div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 23,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+
+        <!-- Sobremesas -->
+        <div class="menu-section" id="jantinhas">
+            <h2 class="section-title">Jantinhas</h2>
+            
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&h=300&fit=crop" alt="Petit Gâteau" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">JANTINHA <span class="special-badge">Clássico</span></div>
+                        </div>
+                        <div class="item-description">ARROZ, FEIJÃO TROPEIRO, VINAGRETE, MACAXEIRA, ACOMPANHADA COM 1 ESPETINHO.</div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 25,00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- caldinhos -->
+        <div class="menu-section" id="caldinhos">
+            <h2 class="section-title">Caldinhos</h2>
+            
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&h=300&fit=crop" alt="Vinhos Tintos" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">CABEÇA DE GALO</div>
+                        </div>
+                        <div class="item-description">Carta especial com rótulos selecionados - consulte nosso sommelier</div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 12</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section" id="cervejas">
+            <h2 class="section-title">Cervejas</h2>
+            
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&h=300&fit=crop" alt="Vinhos Tintos" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">HEINEKEN LONG-NECK</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 12,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=500&h=300&fit=crop" alt="Vinhos Brancos" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">HEINEKEN 600ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 16,90</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500&h=300&fit=crop" alt="Drinks Autorais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">CHOOP HEINEKEN 400ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 11,99</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop" alt="Águas e Sucos Naturais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">AMESTEL 600ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 11,00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section" id="refrigerantes">
+            <h2 class="section-title">Refrigerantes e Águas</h2>
+            
+            <div class="menu-grid">
+                
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=500&h=300&fit=crop" alt="Vinhos Brancos" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">COCA-COLA ZERO 350ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 6,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500&h=300&fit=crop" alt="Drinks Autorais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">GUARANA LATA 350ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 6,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop" alt="Águas e Sucos Naturais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">GUARANA ZERO 350ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 6,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop" alt="Águas e Sucos Naturais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">SPRITE 350ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 6,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop" alt="Águas e Sucos Naturais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">ÁGUA 500ML</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 3,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop" alt="Águas e Sucos Naturais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">H2O</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 8,00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&h=300&fit=crop" alt="Águas e Sucos Naturais" class="card-image">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="item-name">SUCO NATURAL</div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="item-price">R$ 7,00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+    </div>
+
+    <div class="footer">
+        <div class="footer-info">
+            <p><strong>Horário de Funcionamento</strong></p>
+            <p>Segunda a Quinta: 12h às 15h | 19h às 23h</p>
+            <p>Sexta e Sábado: 12h às 16h | 19h às 00h</p>
+            <p>Domingo: 12h às 17h</p>
+            <br>
+            <p>Reservas: (83) 3000-0000 | contato@saborearte.com.br</p>
+            <p>Aceitamos todos os cartões | Taxa de serviço: 10%</p>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante WhatsApp -->
+    <a href="https://w.app/labrasil" target="_blank" class="whatsapp-float" aria-label="Fale conosco no WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+    </a>
+
+    <script>
+    // Impede o navegador de restaurar posição de rolagem automática
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    // Sempre abrir no topo (na logo)
+    window.addEventListener('load', function () {
+        setTimeout(() => {
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "instant"
+            });
+        }, 50);
+    });
+
+        // Menu Hamburguer Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navList = document.getElementById('navList');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        menuToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            navList.classList.toggle('active');
+        });
+
+        // Fecha o menu ao clicar em um link
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                navList.classList.remove('active');
+            });
+        });
+
+        // Fecha o menu ao clicar fora dele
+        document.addEventListener('click', function(event) {
+            const isClickInsideMenu = navList.contains(event.target);
+            const isClickOnToggle = menuToggle.contains(event.target);
+            
+            if (!isClickInsideMenu && !isClickOnToggle && navList.classList.contains('active')) {
+                menuToggle.classList.remove('active');
+                navList.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
